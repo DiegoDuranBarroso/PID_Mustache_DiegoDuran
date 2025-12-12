@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Listar Usuarios</title>
+</head>
+<body>
+<h2>Aqui se van a listar los usuarios llamando al controlador y servicio adecuado</h2>
+
+<h2>Tabla de Usuarios</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Direcciones</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#listaUsuarios}}
+        <tr>
+            <td>{{nombre}}</td>
+            <td>
+                <table border="1">
+                    <tbody>
+                    {{#direcciones}}
+                        <tr>
+                            <td>{{calle}} - {{ciudad}}</td>
+                        </tr>
+                    {{/direcciones}}
+                    {{^direcciones}}
+                        <tr><td>(Sin direcciones)</td></tr>
+                    {{/direcciones}}
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <a href="/editUsuario/{{id}}">Editar</a>
+
+                <!-- Borrado por POST (más correcto que GET) -->
+                <form action="/deleteUsuario/{{id}}" method="post" style="display:inline;">
+                    <button type="submit" onclick="return confirm('¿Borrar usuario?');">Borrar</button>
+                </form>
+            </td>
+        </tr>
+    {{/listaUsuarios}}
+
+    {{^listaUsuarios}}
+        <tr>
+            <td colspan="3">(No hay usuarios)</td>
+        </tr>
+    {{/listaUsuarios}}
+    </tbody>
+</table>
+
+<br>
+<a href="/addUsuario">Add Usuario</a>
+</body>
+</html>
