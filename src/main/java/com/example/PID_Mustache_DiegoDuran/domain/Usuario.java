@@ -2,6 +2,8 @@ package com.example.PID_Mustache_DiegoDuran.domain;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +17,20 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+    @NotBlank(message = "El nombre es obligatorio")
+    @Size(max = 80, message = "El nombre no puede superar 80 caracteres")
     private String nombre;
 
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Direccion> direcciones = new ArrayList<>();
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PerfilUsuario perfil;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActividadUsuario> actividades = new ArrayList<>();
 	
 	public Usuario() {
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -48,6 +57,22 @@ public class Usuario {
 
 	public void setDirecciones(List<Direccion> direcciones) {
 		this.direcciones = direcciones;
+	}
+
+	public PerfilUsuario getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(PerfilUsuario perfil) {
+		this.perfil = perfil;
+	}
+
+	public List<ActividadUsuario> getActividades() {
+		return actividades;
+	}
+
+	public void setActividades(List<ActividadUsuario> actividades) {
+		this.actividades = actividades;
 	}
 
 	//equality

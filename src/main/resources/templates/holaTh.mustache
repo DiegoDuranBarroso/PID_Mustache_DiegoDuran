@@ -3,8 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Hola Mustache</title>
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<h1>{{Bienvenida}}</h1>
+<main class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-mark">UD</span>
+            <span>Usuarios & Direcciones</span>
+        </a>
+        <nav class="nav-actions">
+            <a class="button button-secondary" href="/">Inicio</a>
+            <a class="button button-primary" href="/listUsuarios">Ver usuarios</a>
+        </nav>
+    </header>
+
+    <section class="panel welcome-card">
+        <div class="page-title">
+            <h1>{{Bienvenida}}</h1>
+            <p>Vista renderizada con Spring MVC y Mustache.</p>
+        </div>
+    </section>
+</main>
 </body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva direccion</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<main class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-mark">UD</span>
+            <span>Usuarios & Direcciones</span>
+        </a>
+        <nav class="nav-actions">
+            <a class="button button-secondary" href="/listUsuarios">Volver al listado</a>
+        </nav>
+    </header>
+
+    <section class="page-head">
+        <div class="page-title">
+            {{#usuario}}
+                <h1>Nueva direccion</h1>
+                <p>Asocia una direccion al usuario {{nombre}}.</p>
+            {{/usuario}}
+        </div>
+    </section>
+
+    <section class="panel form-card">
+        {{#validationError}}
+            <div class="error-message">{{validationError}}</div>
+        {{/validationError}}
+
+        {{#usuario}}
+            <form action="/guardarDireccion" method="post">
+                <input type="hidden" name="usuarioId" value="{{id}}">
+
+                <div class="field">
+                    <label for="calle">Calle</label>
+                    <input type="text" id="calle" name="calle" value="{{calle}}" required maxlength="120" placeholder="Ej. Calle Betis 12">
+                </div>
+
+                <div class="field">
+                    <label for="ciudad">Ciudad</label>
+                    <input type="text" id="ciudad" name="ciudad" value="{{ciudad}}" required maxlength="80" placeholder="Ej. Sevilla">
+                </div>
+
+                <div class="field">
+                    <label for="tipoDireccionId">Tipo de direccion</label>
+                    <select id="tipoDireccionId" name="tipoDireccionId" required>
+                        {{#tiposDireccion}}
+                            <option value="{{id}}">{{nombre}}</option>
+                        {{/tiposDireccion}}
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button class="button-primary" type="submit">Crear direccion</button>
+                    <a class="button button-secondary" href="/listUsuarios">Cancelar</a>
+                </div>
+            </form>
+        {{/usuario}}
+
+        {{^usuario}}
+            <div class="message">No se ha encontrado el usuario.</div>
+        {{/usuario}}
+    </section>
+</main>
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Hola Mustache</title>
+    <title>{{errorTitle}}</title>
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
@@ -13,15 +13,16 @@
             <span>Usuarios & Direcciones</span>
         </a>
         <nav class="nav-actions">
-            <a class="button button-secondary" href="/">Inicio</a>
-            <a class="button button-primary" href="/listUsuarios">Ver usuarios</a>
+            <a class="button button-secondary" href="/listUsuarios">Volver al listado</a>
         </nav>
     </header>
 
-    <section class="panel welcome-card">
-        <div class="page-title">
-            <h1>{{Bienvenida}}</h1>
-            <p>Vista renderizada con Spring MVC y Mustache.</p>
+    <section class="panel welcome-card error-page">
+        <h1>{{errorTitle}}</h1>
+        <p>{{errorMessage}}</p>
+        <div class="hero-actions">
+            <a class="button button-primary" href="/listUsuarios">Ir a usuarios</a>
+            <a class="button button-secondary" href="/">Inicio</a>
         </div>
     </section>
 </main>

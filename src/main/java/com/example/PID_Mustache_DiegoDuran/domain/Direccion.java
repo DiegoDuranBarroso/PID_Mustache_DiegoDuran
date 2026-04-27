@@ -2,6 +2,8 @@ package com.example.PID_Mustache_DiegoDuran.domain;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.util.Objects;
 
@@ -12,14 +14,21 @@ public class Direccion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "La calle es obligatoria")
+    @Size(max = 120, message = "La calle no puede superar 120 caracteres")
     private String calle;
+
+    @NotBlank(message = "La ciudad es obligatoria")
+    @Size(max = 80, message = "La ciudad no puede superar 80 caracteres")
     private String ciudad;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Usuario usuario;
 
+    @ManyToOne(optional = false)
+    private TipoDireccion tipoDireccion;
+
 	public Direccion() {
-		// TODO Auto-generated constructor stub
 	}
 
     // Getters y setters
@@ -53,6 +62,14 @@ public class Direccion {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public TipoDireccion getTipoDireccion() {
+		return tipoDireccion;
+	}
+
+	public void setTipoDireccion(TipoDireccion tipoDireccion) {
+		this.tipoDireccion = tipoDireccion;
 	}
 	
 	//equality

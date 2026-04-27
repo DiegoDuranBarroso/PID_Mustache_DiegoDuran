@@ -1,91 +1,120 @@
 package com.example.PID_Mustache_DiegoDuran.commandLineRunner;
 
-
+import com.example.PID_Mustache_DiegoDuran.domain.ActividadUsuario;
 import com.example.PID_Mustache_DiegoDuran.domain.Direccion;
+import com.example.PID_Mustache_DiegoDuran.domain.PerfilUsuario;
+import com.example.PID_Mustache_DiegoDuran.domain.TipoDireccion;
 import com.example.PID_Mustache_DiegoDuran.domain.Usuario;
+import com.example.PID_Mustache_DiegoDuran.repositories.ActividadUsuarioRepository;
 import com.example.PID_Mustache_DiegoDuran.repositories.DireccionRepository;
+import com.example.PID_Mustache_DiegoDuran.repositories.PerfilUsuarioRepository;
+import com.example.PID_Mustache_DiegoDuran.repositories.TipoDireccionRepository;
 import com.example.PID_Mustache_DiegoDuran.repositories.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 
 @Component
 public class MyCommandLineRunner implements CommandLineRunner {
-	
-	private final UsuarioRepository usuarioRepository;
-	private final DireccionRepository direccionRepository;
-	
 
-	public MyCommandLineRunner(UsuarioRepository usuarioRepository, DireccionRepository direccionRepository) {
-		// TODO Auto-generated constructor stub
-		//System.out.println("\t MyCommandLineRunner Builder ");
-		this.usuarioRepository=usuarioRepository;
-		this.direccionRepository=direccionRepository;
-	}
+    private final UsuarioRepository usuarioRepository;
+    private final DireccionRepository direccionRepository;
+    private final TipoDireccionRepository tipoDireccionRepository;
+    private final PerfilUsuarioRepository perfilUsuarioRepository;
+    private final ActividadUsuarioRepository actividadUsuarioRepository;
 
-	@Override
-	public void run(String... args) throws Exception {
-		// TODO Auto-generated method stub
-		System.out.println("\t MyCommandLineRunner is running! ");
-		poblarBD();
-	}
-	
-	void poblarBD() {
+    public MyCommandLineRunner(UsuarioRepository usuarioRepository,
+                               DireccionRepository direccionRepository,
+                               TipoDireccionRepository tipoDireccionRepository,
+                               PerfilUsuarioRepository perfilUsuarioRepository,
+                               ActividadUsuarioRepository actividadUsuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.direccionRepository = direccionRepository;
+        this.tipoDireccionRepository = tipoDireccionRepository;
+        this.perfilUsuarioRepository = perfilUsuarioRepository;
+        this.actividadUsuarioRepository = actividadUsuarioRepository;
+    }
 
-		// Crear el usuario
+    @Override
+    public void run(String... args) {
+        poblarBD();
+    }
+
+    void poblarBD() {
+        TipoDireccion calle = crearTipoDireccionSiNoExiste("Calle", "Direccion de tipo calle");
+        TipoDireccion piso = crearTipoDireccionSiNoExiste("Piso", "Direccion de tipo piso");
+
+        crearUsuarioLuikySiNoExiste(calle, piso);
+        crearUsuarioPedroSiNoExiste(calle);
+    }
+
+    private void crearUsuarioLuikySiNoExiste(TipoDireccion calle, TipoDireccion piso) {
+        if (usuarioRepository.findByNombreIgnoreCase("Luiky").isPresent()) {
+            return;
+        }
+
+        Usuario luiky = crearUsuario("Luiky");
+        crearPerfil(luiky, "luiky@example.com", "600111222", LocalDate.now().minusMonths(3));
+        crearDireccion(luiky, "Calle 1", "Ciudad 1", calle);
+        crearDireccion(luiky, "Piso 2", "Ciudad 2", piso);
+        crearActividad(luiky, "Alta de usuario", "Creacion inicial del perfil", LocalDate.now().minusMonths(3));
+        crearActividad(luiky, "Revision de datos", "Comprobacion de direcciones asociadas", LocalDate.now().minusDays(12));
+    }
+
+    private void crearUsuarioPedroSiNoExiste(TipoDireccion calle) {
+        if (usuarioRepository.findByNombreIgnoreCase("Pedro").isPresent()) {
+            return;
+        }
+
+        Usuario pedro = crearUsuario("Pedro");
+        crearPerfil(pedro, "pedro@example.com", "600333444", LocalDate.now().minusMonths(1));
+        crearDireccion(pedro, "Calle 3", "Ciudad 3", calle);
+        crearActividad(pedro, "Contacto inicial", "Primer registro de actividad del usuario", LocalDate.now().minusDays(20));
+    }
+
+    private Usuario crearUsuario(String nombre) {
         Usuario usuario = new Usuario();
-        usuario.setNombre("Luiky");
-        
-        //guardarlo primero suele ser bueno
-        Usuario usuarioSaved= usuarioRepository.save(usuario);
+        usuario.setNombre(nombre);
+        return usuarioRepository.save(usuario);
+    }
 
-        // Crear las direcciones
-        Direccion direccion1 = new Direccion();
-        direccion1.setCalle("Calle 1");
-        direccion1.setCiudad("Ciudad 1");
-        direccion1.setUsuario(usuarioSaved); // Relación bidireccional
+    private TipoDireccion crearTipoDireccionSiNoExiste(String nombre, String descripcion) {
+        return tipoDireccionRepository.findByNombreIgnoreCase(nombre)
+                .orElseGet(() -> crearTipoDireccion(nombre, descripcion));
+    }
 
-        Direccion direccion2 = new Direccion();
-        direccion2.setCalle("Calle 2");
-        direccion2.setCiudad("Ciudad 2");
-        direccion2.setUsuario(usuarioSaved); // Relación bidireccional
+    private TipoDireccion crearTipoDireccion(String nombre, String descripcion) {
+        TipoDireccion tipoDireccion = new TipoDireccion();
+        tipoDireccion.setNombre(nombre);
+        tipoDireccion.setDescripcion(descripcion);
+        return tipoDireccionRepository.save(tipoDireccion);
+    }
 
-        // Guardar las direcciones primero, sino id a null. Guardar el usuario no me propagara el guardado de direcciones.
-        Direccion direccion1Saved =direccionRepository.save(direccion1);
-        Direccion direccion2Saved =direccionRepository.save(direccion2);
-        
-        // Asignar direcciones al usuario
-        usuarioSaved.getDirecciones().add(direccion1Saved);
-        usuarioSaved.getDirecciones().add(direccion2Saved);   
-        
-        //persistir el usuario
-        usuarioSaved= usuarioRepository.save(usuarioSaved);
-        
-        // ---- crear el segundo usuario.
-        
-     // Crear segundo usuario con una dirección
-        Usuario usuario2 = new Usuario();
-        usuario2.setNombre("Pedro");
-        
-        //guardarlo primero suele ser bueno
-        Usuario usuario2Saved= usuarioRepository.save(usuario2);
+    private void crearDireccion(Usuario usuario, String calle, String ciudad, TipoDireccion tipoDireccion) {
+        Direccion direccion = new Direccion();
+        direccion.setCalle(calle);
+        direccion.setCiudad(ciudad);
+        direccion.setUsuario(usuario);
+        direccion.setTipoDireccion(tipoDireccion);
+        direccionRepository.save(direccion);
+    }
 
-        Direccion direccion3 = new Direccion();
-        direccion3.setCalle("Calle 3");
-        direccion3.setCiudad("Ciudad 3");
-        direccion3.setUsuario(usuario2Saved); // Relación bidireccional
-        
+    private void crearPerfil(Usuario usuario, String email, String telefono, LocalDate fechaRegistro) {
+        PerfilUsuario perfilUsuario = new PerfilUsuario();
+        perfilUsuario.setEmail(email);
+        perfilUsuario.setTelefono(telefono);
+        perfilUsuario.setFechaRegistro(fechaRegistro);
+        perfilUsuario.setUsuario(usuario);
+        perfilUsuarioRepository.save(perfilUsuario);
+    }
 
-        
-        // Persistir la dirección
-     // Guardar las direcciones primero, sino id a null. Guardar el usuario no me propagara el guardado de direcciones.
-        Direccion direccion3Saved =direccionRepository.save(direccion3);
-        
-        // Asignar la dirección al usuario y persistir el usuario
-        usuario2Saved.getDirecciones().add(direccion3Saved);
-        usuario2Saved= usuarioRepository.save(usuario2Saved);
-		
-	}
-
-
+    private void crearActividad(Usuario usuario, String titulo, String descripcion, LocalDate fecha) {
+        ActividadUsuario actividad = new ActividadUsuario();
+        actividad.setTitulo(titulo);
+        actividad.setDescripcion(descripcion);
+        actividad.setFecha(fecha);
+        actividad.setUsuario(usuario);
+        actividadUsuarioRepository.save(actividad);
+    }
 }

@@ -6,8 +6,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
+
+    Optional<Usuario> findByNombreIgnoreCase(String nombre);
 	
 	
 	// Consulta personalizada con JOIN FETCH para cargar usuario y sus direcciones //Gemini:

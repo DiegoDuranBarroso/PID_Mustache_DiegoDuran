@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Editar usuario</title>
+    <title>Nueva actividad</title>
     <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
@@ -19,8 +19,10 @@
 
     <section class="page-head">
         <div class="page-title">
-            <h1>Editar usuario</h1>
-            <p>Actualiza el nombre del usuario seleccionado.</p>
+            {{#usuario}}
+                <h1>Nueva actividad</h1>
+                <p>Registra una actividad para el usuario {{nombre}}.</p>
+            {{/usuario}}
         </div>
     </section>
 
@@ -30,16 +32,26 @@
         {{/validationError}}
 
         {{#usuario}}
-            <form action="/updateUsuario" method="post">
-                <input type="hidden" name="id" value="{{id}}">
+            <form action="/guardarActividad" method="post">
+                <input type="hidden" name="usuarioId" value="{{id}}">
 
                 <div class="field">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" name="nombre" value="{{nombre}}" required maxlength="80">
+                    <label for="titulo">Titulo</label>
+                    <input type="text" id="titulo" name="titulo" value="{{titulo}}" required maxlength="100" placeholder="Ej. Reunion inicial">
+                </div>
+
+                <div class="field">
+                    <label for="descripcion">Descripcion</label>
+                    <textarea id="descripcion" name="descripcion" maxlength="500" placeholder="Detalle breve de la actividad">{{descripcion}}</textarea>
+                </div>
+
+                <div class="field">
+                    <label for="fecha">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" value="{{fecha}}" required>
                 </div>
 
                 <div class="form-actions">
-                    <button class="button-primary" type="submit">Guardar cambios</button>
+                    <button class="button-primary" type="submit">Crear actividad</button>
                     <a class="button button-secondary" href="/listUsuarios">Cancelar</a>
                 </div>
             </form>

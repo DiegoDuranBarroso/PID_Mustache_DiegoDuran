@@ -1,15 +1,48 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Pagina de Bienvenida</title>
+    <title>Gestion de usuarios</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<h1> Pagina de Bienvenida index.mustache. Codigo HTML normal </h1>
-<h2>Main Menu</h2>
-<ul>
-    <li><h3><a href="/holaTh">Hola Mundo con Spring + Mustache</a></h3></li>
-    <li><h3>Usuarios (listar/añadir/editar/borrar): <a href="/listUsuarios">listarUsuarios</a></h3></li>
-</ul>
+<main class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-mark">UD</span>
+            <span>Usuarios & Direcciones</span>
+        </a>
+        <nav class="nav-actions">
+            <a class="button button-secondary" href="/holaTh">Saludo</a>
+            <a class="button button-primary" href="/listUsuarios">Ver usuarios</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div>
+            <h1>Gestion de usuarios clara y sencilla</h1>
+            <p>Consulta, crea, edita y elimina usuarios con sus direcciones asociadas desde una interfaz mas cuidada.</p>
+            <div class="hero-actions">
+                <a class="button button-primary" href="/listUsuarios">Abrir listado</a>
+                <a class="button button-secondary" href="/addUsuario">Crear usuario</a>
+            </div>
+        </div>
+
+        <div class="stats-grid" aria-label="Resumen de funcionalidades">
+            <article class="stat-card">
+                <span class="stat-number">01</span>
+                <span class="stat-label">Listado con direcciones cargadas</span>
+            </article>
+            <article class="stat-card">
+                <span class="stat-number">02</span>
+                <span class="stat-label">Alta y edicion de usuarios</span>
+            </article>
+            <article class="stat-card">
+                <span class="stat-number">03</span>
+                <span class="stat-label">Borrado controlado desde formulario POST</span>
+            </article>
+        </div>
+    </section>
+</main>
 </body>
 </html>

@@ -1,12 +1,11 @@
 package com.example.PID_Mustache_DiegoDuran.services;
 
-import com.example.PID_Mustache_DiegoDuran.domain.Direccion;
 import com.example.PID_Mustache_DiegoDuran.domain.Usuario;
-import com.example.PID_Mustache_DiegoDuran.repositories.DireccionRepository;
+import com.example.PID_Mustache_DiegoDuran.exceptions.ResourceNotFoundException;
 import com.example.PID_Mustache_DiegoDuran.repositories.UsuarioRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -14,48 +13,45 @@ import java.util.List;
 public class UsuarioServiceImpl implements UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
-	private final DireccionRepository direccionRepository;
 
-	@Autowired
-	public UsuarioServiceImpl(UsuarioRepository usuarioRepository,
-							  DireccionRepository direccionRepository) {
-
-		System.out.println("\t UsuarioServiceImpl constructor ");
+	public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
 		this.usuarioRepository = usuarioRepository;
-		this.direccionRepository = direccionRepository;
 	}
 
 
-	//En la capa servicios es donde se implementa la LOGICA de negocio
 	@Override
 	public List<Usuario> findAllUsers() {
-			
-		// TODO Asi no es recomendable: Comprobar si hay usuarios, si esta vacio ... 
 		return this.usuarioRepository.findAllWithDirecciones();
 	}
 
 	@Override
 	public void crearUsuario(Usuario usuario) {
-		// TODO Logica...
+		usuario.setNombre(usuario.getNombre().trim());
 		usuarioRepository.save(usuario);
 	}
 
 	public Usuario findById(Long id) {
 		return usuarioRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado: " + id));
 	}
 
 	@Transactional
 	public void updateNombre(Long id, String nombre) {
+		if (!StringUtils.hasText(nombre)) {
+			throw new IllegalArgumentException("El nombre es obligatorio");
+		}
+		String nombreNormalizado = nombre.trim();
+		if (nombreNormalizado.length() > 80) {
+			throw new IllegalArgumentException("El nombre no puede superar 80 caracteres");
+		}
 		Usuario u = findById(id);
-		u.setNombre(nombre);
+		u.setNombre(nombreNormalizado);
 		usuarioRepository.save(u);
 	}
 
 	@Transactional
 	public void deleteById(Long id) {
-		List<Direccion> dirs = direccionRepository.findByUsuarioId(id);
-		direccionRepository.deleteAll(dirs);
-		usuarioRepository.deleteById(id);
+		Usuario usuario = findById(id);
+		usuarioRepository.delete(usuario);
 	}
 }

@@ -2,59 +2,112 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Listar Usuarios</title>
+    <title>Usuarios</title>
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<h2>Aqui se van a listar los usuarios llamando al controlador y servicio adecuado</h2>
+<main class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-mark">UD</span>
+            <span>Usuarios & Direcciones</span>
+        </a>
+        <nav class="nav-actions">
+            <a class="button button-secondary" href="/">Inicio</a>
+            <a class="button button-primary" href="/addUsuario">Nuevo usuario</a>
+        </nav>
+    </header>
 
-<h2>Tabla de Usuarios</h2>
+    <section class="page-head">
+        <div class="page-title">
+            <h1>Usuarios</h1>
+            <p>Listado de usuarios registrados y sus direcciones asociadas.</p>
+        </div>
+    </section>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Nombre</th>
-        <th>Direcciones</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#listaUsuarios}}
-        <tr>
-            <td>{{nombre}}</td>
-            <td>
-                <table border="1">
-                    <tbody>
-                    {{#direcciones}}
-                        <tr>
-                            <td>{{calle}} - {{ciudad}}</td>
-                        </tr>
-                    {{/direcciones}}
-                    {{^direcciones}}
-                        <tr><td>(Sin direcciones)</td></tr>
-                    {{/direcciones}}
-                    </tbody>
-                </table>
-            </td>
-            <td>
-                <a href="/editUsuario/{{id}}">Editar</a>
+    <section class="panel">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Perfil</th>
+                    <th>Direcciones</th>
+                    <th>Actividades</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#listaUsuarios}}
+                    <tr>
+                        <td>
+                            <div class="user-name">
+                                <span class="avatar">{{id}}</span>
+                                <span>{{nombre}}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {{#perfil}}
+                                <div class="stacked-info">
+                                    <strong>{{email}}</strong>
+                                    <span>{{telefono}}</span>
+                                    <small>Alta: {{fechaRegistro}}</small>
+                                </div>
+                            {{/perfil}}
+                            {{^perfil}}
+                                <span class="empty-pill">Sin perfil</span>
+                            {{/perfil}}
+                        </td>
+                        <td>
+                            <div class="address-list">
+                                {{#direcciones}}
+                                    <span class="address-pill">
+                                        {{#tipoDireccion}}{{nombre}}: {{/tipoDireccion}}{{calle}} - {{ciudad}}
+                                    </span>
+                                {{/direcciones}}
+                                {{^direcciones}}
+                                    <span class="empty-pill">Sin direcciones</span>
+                                {{/direcciones}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="activity-list">
+                                {{#actividades}}
+                                    <article class="activity-item">
+                                        <strong>{{titulo}}</strong>
+                                        <span>{{descripcion}}</span>
+                                        <small>{{fecha}}</small>
+                                    </article>
+                                {{/actividades}}
+                                {{^actividades}}
+                                    <span class="empty-pill">Sin actividades</span>
+                                {{/actividades}}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="row-actions">
+                                <a class="button button-secondary" href="/editUsuario/{{id}}">Editar</a>
+                                <a class="button button-secondary" href="/addDireccion/{{id}}">Direccion</a>
+                                <a class="button button-secondary" href="/addActividad/{{id}}">Actividad</a>
+                                <form action="/deleteUsuario/{{id}}" method="post">
+                                    <button class="button-danger" type="submit" onclick="return confirm('Borrar usuario?');">Borrar</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {{/listaUsuarios}}
 
-                <!-- Borrado por POST (más correcto que GET) -->
-                <form action="/deleteUsuario/{{id}}" method="post" style="display:inline;">
-                    <button type="submit" onclick="return confirm('¿Borrar usuario?');">Borrar</button>
-                </form>
-            </td>
-        </tr>
-    {{/listaUsuarios}}
-
-    {{^listaUsuarios}}
-        <tr>
-            <td colspan="3">(No hay usuarios)</td>
-        </tr>
-    {{/listaUsuarios}}
-    </tbody>
-</table>
-
-<br>
-<a href="/addUsuario">Add Usuario</a>
+                {{^listaUsuarios}}
+                    <tr>
+                        <td colspan="5">
+                            <div class="message">No hay usuarios registrados.</div>
+                        </td>
+                    </tr>
+                {{/listaUsuarios}}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 </body>
 </html>

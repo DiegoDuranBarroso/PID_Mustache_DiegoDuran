@@ -2,19 +2,45 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Add Usuario</title>
+    <title>Nuevo usuario</title>
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<h1>Add Usuario</h1>
+<main class="app-shell">
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-mark">UD</span>
+            <span>Usuarios & Direcciones</span>
+        </a>
+        <nav class="nav-actions">
+            <a class="button button-secondary" href="/listUsuarios">Volver al listado</a>
+        </nav>
+    </header>
 
-<form action="/guardarUsuario" method="post">
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" required>
-    <br><br>
-    <button type="submit">Add Usuario</button>
-</form>
+    <section class="page-head">
+        <div class="page-title">
+            <h1>Nuevo usuario</h1>
+            <p>Introduce el nombre para crear un nuevo registro.</p>
+        </div>
+    </section>
 
-<br>
-<a href="/listUsuarios">Volver</a>
+    <section class="panel form-card">
+        {{#validationError}}
+            <div class="error-message">{{validationError}}</div>
+        {{/validationError}}
+
+        <form action="/guardarUsuario" method="post">
+            <div class="field">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" value="{{nombre}}" required maxlength="80" placeholder="Ej. Maria Garcia">
+            </div>
+
+            <div class="form-actions">
+                <button class="button-primary" type="submit">Crear usuario</button>
+                <a class="button button-secondary" href="/listUsuarios">Cancelar</a>
+            </div>
+        </form>
+    </section>
+</main>
 </body>
 </html>
